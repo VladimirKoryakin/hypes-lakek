@@ -27,7 +27,7 @@ def sign_in(orig_event, number=1):
 		'Кем вы будете на день самоуправления(учитель или ученик)?',
 		'Какой предмет вы собираетесь вести?',
 		'Вы ' + users[orig_event.user_id][1].upper() + ' и вы ' + users[orig_event.user_id][2] + '?',
-		'Вы зарегестрированы']
+		'Вы зарегистрированы']
 	if users[orig_event.user_id][0] == 1:
 		vk.messages.send(user_id=orig_event.user_id,
 						 random_id=random.randint(1, 10 ** 9),
@@ -60,7 +60,7 @@ def sign_in(orig_event, number=1):
 			if text1 == 'ученик':
 				users[event.user_id][0] += 1
 			sign_in(event, number=users[event.user_id][0])
-
+send = False
 reg = False
 users = {}
 admins = {'305875074'}
@@ -110,7 +110,7 @@ for event in vk_api.longpoll.VkLongPoll(vk_session).listen():
 				vk.messages.send(user_id=event.user_id,
 								 random_id=random.randint(1, 10 ** 9),
 								 message='Привет! Я чат-бот дня самоуправления. Вам повезло: Вы есть в моем спике админов, скорее всего Вы являетесь организатором мероприятия.',
-								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался?', 'help']))
+								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался','new_line' , 'Рассылка', 'help']))
 			elif text == 'расписание':
 				bred = False
 				s = google123.whole_timetable(['5', '6', '7', '8', '10'])
@@ -123,7 +123,7 @@ for event in vk_api.longpoll.VkLongPoll(vk_session).listen():
 				vk.messages.send(user_id=event.user_id,
 								 random_id=random.randint(1, 10 ** 9),
 								 message=ans,
-								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался', 'help']))
+								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался','new_line' , 'Рассылка', 'help']))
 			elif text == 'кто уже зарегистрировался':
 				bred = False
 				s = google123.get_users()
@@ -138,9 +138,28 @@ for event in vk_api.longpoll.VkLongPoll(vk_session).listen():
 				vk.messages.send(user_id=event.user_id,
 								 random_id=random.randint(1, 10 ** 9),
 								 message=ans,
-								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался', 'help']))
+								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался','new_line' , 'Рассылка', 'help']))
+			elif send:
+				send = False
+				bred = False
+				s = event.text
+				for key in users:
+					if str(key) not in admins:
+						vk.messages.send(user_id=key,
+										 random_id=random.randint(1, 10 ** 9),
+										 message='Сообщение от организаторов: ' + s)
+				vk.messages.send(user_id=event.user_id,
+								 random_id=random.randint(1, 10 ** 9),
+								 message='Ваше сообщение успешно отправлено!')
+			elif text == 'рассылка':
+				bred = False
+				send = True
+				vk.messages.send(user_id=event.user_id,
+								 random_id=random.randint(1, 10 ** 9),
+								 message='Напишите мне, что Вы хотите разослать всем участникам мероприятия.')
+
 			if bred:
 				vk.messages.send(user_id=event.user_id,
 								 random_id=random.randint(1, 10 ** 9),
 								 message='Извините, я Вас не понимаю(',
-								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался', 'help']))
+								 keyboard=create_keyb1(['Расписание', 'Кто уже зарегистрировался','new_line' , 'Рассылка', 'help']))
