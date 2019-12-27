@@ -1,3 +1,3 @@
 # hypes-lakek
-Dream team's project
+Dream team's project. 
 Hey there!
